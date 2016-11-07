@@ -11,10 +11,26 @@ FROM openshift/origin-base
 #       this is temporary and should be removed when the container is switch to an empty-dir
 #       with gid support.
 #
-RUN INSTALL_PKGS="haproxy iptables lsof" && \
-    yum install -y $INSTALL_PKGS && \
-    rpm -V $INSTALL_PKGS && \
-    mkdir -p /var/lib/containers/router/{certs,cacerts} && \
+RUN yum install --nogpgcheck -y \
+        git \
+        java-1.8.0-openjdk \
+        gcc-c++ \
+        tar \
+        openssl \
+        openssl-devel \
+        pcre \
+        pcre-devel \
+        make
+RUN yum clean all
+
+# Clone the source code of HAProxy from github
+#RUN git clone http://git.haproxy.org/git/haproxy-1.6.git
+RUN wget http://www.haproxy.org/download/1.6/src/haproxy-1.6.9.tar.gz && tar xzvf haproxy-1.6.9.tar.gz
+
+# Build and install Node.js
+RUN cd haproxy-1.6.9 && make TARGET=linux26 USE_OPENSSL=1 && make install
+
+RUN mkdir -p /var/lib/containers/router/{certs,cacerts} && \
     mkdir -p /var/lib/haproxy/{conf,run,bin,log} && \
     touch /var/lib/haproxy/conf/{{os_http_be,os_edge_http_be,os_tcp_be,os_sni_passthrough,os_reencrypt,os_edge_http_expose,os_edge_http_redirect}.map,haproxy.config} && \
     chmod -R 777 /var && \

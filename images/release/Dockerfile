@@ -18,9 +18,15 @@ RUN mkdir $TMPDIR && \
     INSTALL_PKGS="make gcc zip mercurial krb5-devel bsdtar" && \
     yum install -y $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
-    yum clean all && \
-    curl https://storage.googleapis.com/golang/go$VERSION.linux-amd64.tar.gz | tar -C /usr/local -xzf - && \
-    go get golang.org/x/tools/cmd/cover github.com/tools/godep github.com/golang/lint/golint && \
+yum clean all && \
+wget https://storage.googleapis.com/golang/go1.7.1.linux-s390x.tar.gz && \
+chmod ugo+r go1.7.1.linux-s390x.tar.gz && \
+tar -C /usr/local -xzf go1.7.1.linux-s390x.tar.gz && \
+cd /usr/bin && \
+ln gcc s390x-linux-gnu-gcc
+
+RUN go get golang.org/x/tools/cmd/cover github.com/tools/godep github.com/golang/lint/golint && \    
+   
     touch /os-build-image
 
 # Allows building Origin sources mounted using volume

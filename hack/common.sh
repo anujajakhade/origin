@@ -15,7 +15,7 @@ readonly OS_OUTPUT_PKGDIR="${OS_OUTPUT}/pkgdir"
 readonly OS_GO_PACKAGE=github.com/openshift/origin
 
 readonly OS_IMAGE_COMPILE_PLATFORMS=(
-  linux/amd64
+  linux/s390x
 )
 readonly OS_IMAGE_COMPILE_TARGETS=(
   images/pod
@@ -34,6 +34,7 @@ readonly OS_CROSS_COMPILE_PLATFORMS=(
   darwin/amd64
   windows/amd64
   linux/386
+  linux/s390x
 )
 readonly OS_CROSS_COMPILE_TARGETS=(
   cmd/openshift
@@ -442,15 +443,20 @@ function os::build::place_bins() {
         elif [[ $platform == "linux/386" ]]; then
           platform="linux/32bit" OS_RELEASE_ARCHIVE="openshift-origin-client-tools" os::build::archive_tar "${OS_BINARY_RELEASE_CLIENT_LINUX[@]}"
         elif [[ $platform == "linux/amd64" ]]; then
-          platform="linux/64bit" OS_RELEASE_ARCHIVE="openshift-origin-client-tools" os::build::archive_tar "${OS_BINARY_RELEASE_CLIENT_LINUX[@]}"
-          platform="linux/64bit" OS_RELEASE_ARCHIVE="openshift-origin-server" os::build::archive_tar "${OS_BINARY_RELEASE_SERVER_LINUX[@]}"
+          platform="linux/amd64" OS_RELEASE_ARCHIVE="openshift-origin-client-tools" os::build::archive_tar "${OS_BINARY_RELEASE_CLIENT_LINUX[@]}"
+   elif [[ $platform == "linux/s390x" ]]; then 
+    platform="linux/s390x" OS_RELEASE_ARCHIVE="openshift-origin-client-tools" os::build::archive_tar         "${OS_BINARY_RELEASE_CLIENT_LINUX[@]}"
+    platform="linux/s390x" OS_RELEASE_ARCHIVE="openshift-origin-server" os::build::archive_tar         "${OS_BINARY_RELEASE_SERVER_LINUX[@]}"
+         else 
         else
           echo "++ ERROR: No release type defined for $platform"
         fi
       else
         if [[ $platform == "linux/amd64" ]]; then
           platform="linux/64bit" os::build::archive_tar "./*"
-        else
+	elif [[ $platform == "linux/s390x" ]]; then
+	     platform="linux/s390x" os::build::archive_tar "./*"
+	else
           echo "++ ERROR: No release type defined for $platform"
         fi
       fi

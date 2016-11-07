@@ -16,15 +16,20 @@ COPY lib/systemd/system/docker.service.d/docker-sdn-ovs.conf /usr/lib/systemd/sy
 COPY scripts/* /usr/local/bin/
 
 RUN curl -L -o /etc/yum.repos.d/origin-next-epel-7.repo https://copr.fedoraproject.org/coprs/maxamillion/origin-next/repo/epel-7/maxamillion-origin-next-epel-7.repo && \
-    INSTALL_PKGS="libmnl libnetfilter_conntrack openvswitch \
-      libnfnetlink iptables iproute bridge-utils procps-ng ethtool socat openssl \
+INSTALL_PKGS="wget tar make gcc openssl python perl libmnl libnetfilter_conntrack \
+ libnfnetlink iptables iproute bridge-utils procps-ng ethtool socat openssl \
       binutils xz kmod-libs kmod sysvinit-tools device-mapper-libs dbus \
-      ceph-common iscsi-initiator-utils" && \
+iscsi-initiator-utils" && \
     yum install -y $INSTALL_PKGS && \
     rpm -V $INSTALL_PKGS && \
     yum clean all && \
     mkdir -p /usr/lib/systemd/system/origin-node.service.d /usr/lib/systemd/system/docker.service.d && \
     chmod +x /usr/local/bin/* /usr/bin/openshift-*
+
+RUN mkdir openvswitch && cd ./openvswitch
+RUN wget http://openvswitch.org/releases/openvswitch-2.4.0.tar.gz
+RUN tar -xvf openvswitch-2.4.0.tar.gz
+RUN cd openvswitch-2.4.0/ && ./configure && make && make install
 
 LABEL io.k8s.display-name="OpenShift Origin Node" \
       io.k8s.description="This is a component of OpenShift Origin and contains the software for individual nodes when using SDN."
