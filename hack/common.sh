@@ -447,8 +447,7 @@ function os::build::place_bins() {
    elif [[ $platform == "linux/s390x" ]]; then 
     platform="linux/s390x" OS_RELEASE_ARCHIVE="openshift-origin-client-tools" os::build::archive_tar         "${OS_BINARY_RELEASE_CLIENT_LINUX[@]}"
     platform="linux/s390x" OS_RELEASE_ARCHIVE="openshift-origin-server" os::build::archive_tar         "${OS_BINARY_RELEASE_SERVER_LINUX[@]}"
-         else 
-        else
+         else  
           echo "++ ERROR: No release type defined for $platform"
         fi
       else
