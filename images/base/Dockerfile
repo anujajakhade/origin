@@ -6,17 +6,14 @@
 #
 FROM ecos0003:5000/rhel:7.2
 
-RUN INSTALL_PKGS="which git tar wget socat hostname sysvinit-tools util-linux ethtool bsdtar" && \
+RUN INSTALL_PKGS="which git tar wget hostname sysvinit-tools util-linux bsdtar \
+     socat ethtool tree findutils nmap-ncat e2fsprogs xfsprogs lsof" && \
      yum install -y $INSTALL_PKGS && \
      rpm -V $INSTALL_PKGS && \
      yum clean all && \
     rpm -V $INSTALL_PKGS && \
     yum clean all && \
     mkdir -p /var/lib/origin
-
-RUN wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-    rpm -Uvh epel-release-latest-7.noarch.rpm
-
 
 LABEL io.k8s.display-name="OpenShift Origin Centos 7 Base" \
       io.k8s.description="This is the base image from which all OpenShift Origin images inherit."

@@ -11,7 +11,8 @@ FROM openshift/origin-base
 #       this is temporary and should be removed when the container is switch to an empty-dir
 #       with gid support.
 #
-RUN yum install --nogpgcheck -y \
+RUN yum update -y
+RUN yum install -y \
         git \
         java-1.8.0-openjdk \
         gcc-c++ \
